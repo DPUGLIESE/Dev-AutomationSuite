@@ -1,0 +1,22 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MainSuite" verbose="1" >
+    
+    <parameter name="projectDirectory" value="~/workspace/SeleniumTestNG/"></parameter>
+    <parameter name="xlsDirectory" value="/home/dpugliese/workspace/SeleniumTestNG/src/resources/example.xls"></parameter>
+    <parameter name="sheetsToWork" value="exampleIn;exampleOUT"></parameter>
+	<parameter name="proxyDirecc" value=""></parameter>
+	
+	<test name="Example test">
+		
+	    <parameter name="webDriver" value="chrome"></parameter>
+	    
+		<classes>
+		    
+		    <class name="src.test.java.Tests.Example"/>
+
+    	</classes>
+
+  	</test>
+	
+</suite>
