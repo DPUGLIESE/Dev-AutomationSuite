@@ -1,6 +1,7 @@
 *.class
 *.project
 *.classpath
+test-output/
 *~
 # Package Files #
 *.jar

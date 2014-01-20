@@ -1,0 +1,32 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MainSuite" verbose="1" >
+    
+    <parameter name="projectDirectory" value="/home/dpugliese/workspace/Dev-AutomationSuite"></parameter>
+    <parameter name="xlsDirectory" value="src/resources/example.xls"></parameter>
+    <parameter name="sheetsToWork" value="exampleIn;exampleOUT"></parameter>
+	<parameter name="proxyDirecc" value=""></parameter>
+	
+	<test name="Example test chrome">
+		
+	    <parameter name="webDriver" value="chrome"></parameter>
+	    
+		<classes>
+		    
+		    <class name="Tests.Example"/>
+
+    	</classes>
+
+  	</test>
+	<test name="Example test">
+		
+	    <parameter name="webDriver" value="firefox"></parameter>
+	    
+		<classes>
+		    
+		    <class name="Tests.Example"/>
+
+    	</classes>
+
+  	</test>
+</suite>

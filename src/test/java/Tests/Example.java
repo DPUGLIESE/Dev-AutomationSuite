@@ -56,7 +56,7 @@ public class Example extends MainSuite {
 			
 			System.out.println("Row: "+i );
 
-			SiteData data  = LoadSite.getUrlData(sheetIN.getRow(i).getCell(0).getStringCellValue(), Driver, true);
+			SiteData data  = Main.LoadSite.getUrlData(sheetIN.getRow(i).getCell(0).getStringCellValue(), Driver, true);
 			
 			rows ++;
 			
@@ -75,7 +75,9 @@ public class Example extends MainSuite {
 			
 		LogManager.entTable(writer);
 		LogManager.closeHtml(writer);
-		
+		for (int index = sheetOUT.getLastRowNum(); index >= sheetOUT.getFirstRowNum(); index--) {
+			sheetOUT.removeRow( sheetOUT.getRow(index));
+			     }
 	}
 	
 	@AfterClass
@@ -83,6 +85,7 @@ public class Example extends MainSuite {
 	public void after(String webDriver){
 		
 		closeDriver(webDriver);
+		
 		
 	}
 
