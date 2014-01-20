@@ -1,6 +1,7 @@
 *.class
 *.project
 *.classpath
+.settings/
 test-output/
 *~
 # Package Files #
