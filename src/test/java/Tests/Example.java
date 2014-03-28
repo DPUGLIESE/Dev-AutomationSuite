@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -32,52 +33,7 @@ public class Example extends MainSuite {
 	@Parameters("webDriver")
 	public void test(String webDriver) throws InterruptedException, IOException, AWTException{
 		
-		Sheet sheetIN = sheets.get(0);
-		Sheet sheetOUT = sheets.get(1);
-		
-		int i = 1;
-		int rows = 0;
-		
-		/*for (int index = sheetOUT.getLastRowNum(); index >= sheetOUT.getFirstRowNum(); index--) {
-			sheetOUT.removeRow( sheetOUT.getRow(index));
-	    }*/
-		
-		Row row = sheetOUT.createRow((short) rows);
-		Cell cellA = row.createCell((short) 0);
-		Cell cellB = row.createCell((short) 1);
-		
-		cellA.setCellValue("URL");
-		cellB.setCellValue("SourceCode");
-
-		PrintWriter writer = LogManager.createHtml("Elements"+"-"+sheetIN.getSheetName()+"-"+webDriver+"-Log.html");
-		LogManager.startTable(writer,sheetIN.getSheetName(),webDriver);
-		
-		while (!sheetIN.getRow(i).getCell(0).getStringCellValue().equals("END")) {
-			
-			System.out.println("Row: "+i );
-
-			SiteData data  = Main.LoadSite.getUrlData(sheetIN.getRow(i).getCell(0).getStringCellValue(), Driver, true);
-			
-			rows ++;
-			
-			Row row1 = sheetOUT.createRow((short) rows);
-			Cell cellA1 = row1.createCell((short) 0);
-			Cell cellB1 = row1.createCell((short) 1);
-			
-			cellA1.setCellValue(data.url);
-			cellB1.setCellValue(data.sourceCode);
-			
-			System.out.println("Source code tored from: "+ data.url);
-		
-			i++;
-		
-		}
-			
-		LogManager.entTable(writer);
-		LogManager.closeHtml(writer);
-		for (int index = sheetOUT.getLastRowNum(); index >= sheetOUT.getFirstRowNum(); index--) {
-			sheetOUT.removeRow( sheetOUT.getRow(index));
-			     }
+	
 	}
 	
 	@AfterClass

@@ -6,13 +6,13 @@ import org.browsermob.proxy.ProxyServer;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.android.AndroidDriver;
+import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Parameters;
@@ -42,7 +42,6 @@ public class MainSuite {
 //Browsers configurations
 	
 	public static DesiredCapabilities ffCap = DesiredCapabilities.firefox();
-	public static DesiredCapabilities safariCap = DesiredCapabilities.safari();
 	public static DesiredCapabilities chromeCap = DesiredCapabilities.chrome();
 	public static DesiredCapabilities ieCap = DesiredCapabilities.internetExplorer();
 	public static DesiredCapabilities androidCap = DesiredCapabilities.android();
@@ -63,7 +62,7 @@ public class MainSuite {
 		
 		proxy.setHttpProxy(proxyDirecc);   
     	proxy.setFtpProxy(proxyDirecc);
-    	//proxy.setHttpsProxy(proxyDirecc);
+    	proxy.setSslProxy(proxyDirecc);
     	
 	}
 	
@@ -74,29 +73,31 @@ public class MainSuite {
 	    server.setCaptureContent(true);
 	    server.setCaptureHeaders(true);
 	   
-	    /*proxy = server.seleniumProxy();
-
 	    if (!(proxyDirecc.equals("")||proxyDirecc.equals("NOPROXY"))){
-
-			setProxy(proxyDirecc);
-			
-		}*/
-/*
-		ffCap.setCapability(CapabilityType.PROXY, proxy);
-        chromeCap.setCapability(CapabilityType.PROXY, proxy);
-        ieCap.setCapability(CapabilityType.PROXY, proxy);
-        safariCap.setCapability(CapabilityType.PROXY, proxy);
-        ieCap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);    
-		ieCap.setCapability("ie.ensureCleanSession", true);    
-	    ieCap.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);	    
-	    ieCap.setCapability("ignoreProtectedModeSettings", true);
-	    */
+	    	
+		    proxy = server.seleniumProxy();
+	
+		    if (!(proxyDirecc.equals("")||proxyDirecc.equals("NOPROXY"))){
+	
+				setProxy(proxyDirecc);
+				
+			}
+	
+			ffCap.setCapability(CapabilityType.PROXY, proxy);
+	        chromeCap.setCapability(CapabilityType.PROXY, proxy);
+	        ieCap.setCapability(CapabilityType.PROXY, proxy);
+	        ieCap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);    
+			ieCap.setCapability("ie.ensureCleanSession", true);    
+		    ieCap.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);	    
+		    ieCap.setCapability("ignoreProtectedModeSettings", true);
+	    }
 	    System.out.println("*-*-*-  SERVER INICIATED  -*-*-*");
 		
 	}
 	
 // Methods to open browsers
 	
+	@SuppressWarnings("deprecation")
 	public static WebDriver openDriver(String webDriver){
 		
 		switch (webDriver){
@@ -124,19 +125,11 @@ public class MainSuite {
 				System.out.println("*-*-*-  CHROME DRIVER INICIATED  -*-*-*");
 				
 				break;
-			
-			case "safari":
 				
-				Driver = new SafariDriver(safariCap);		
-				Driver.manage().deleteAllCookies();			
-				System.out.println("*-*-*-  SAFARI DRIVER INICIATED  -*-*-*");
-				
-				break;
-			
 			case "android":
 				
-				androidCap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);				
-				Driver = new AndroidDriver(androidCap);
+				//androidCap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+				Driver = new AndroidDriver();
 				System.out.println("*-*-*-  ANDROID DRIVER INICIATED  -*-*-*");
 				
 				break;
@@ -173,14 +166,7 @@ public static void closeDriver(String webDriver){
 				System.out.println("*-*-*-  CHROME DRIVER CLOSED  -*-*-*");
 				
 				break;
-			
-			case "safari":
 				
-				Driver.quit();
-				System.out.println("*-*-*-  SAFARI DRIVER CLOSED  -*-*-*");
-				
-				break;
-			
 			case "android":
 				
 				Driver.quit();
@@ -205,33 +191,39 @@ public static void closeDriver(String webDriver){
 //TestNG methods
 	
 	@BeforeSuite
-	@Parameters({"proxyDirecc","sheetsToWork","projectDirectory","xlsDirectory"})
-	public void beforeSuite(String proxyDirecc,String sheetsToWork,String projectDirectory,String xlsDirectory) throws Exception{
+	@Parameters({"proxyDirecc","sheetsToWork","xlsDirectory"})
+	public void beforeSuite(String proxyDirecc,String sheetsToWork,String xlsDirectory) throws Exception{
 		
-		System.setProperty("webdriver.chrome.driver",projectDirectory + "/drivers/chromedriver");
-		//System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY, projectDirectory + "\\drivers\\IEDriverServer.exe"); 
+		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"/drivers/chromedriver");
+		//System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY,System.getProperty("user.dir")+"/drivers/IEDriverServer.exe"); 
 		
 		startServer(proxyDirecc);
 		
-		XLS = LogManager.openXLS(xlsDirectory);
+		if (!xlsDirectory.equals("NOINPUT")){
+			XLS = LogManager.openXLS(xlsDirectory);
+			sheets = LogManager.getSheets(sheetsToWork, XLS);
+		}
 		
-		sheets = LogManager.getSheets(sheetsToWork, XLS);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd#HH-mm-ss");
 		Date date = new Date();
 		//create a new log folder for this session
-		logDirectory = projectDirectory+"\\test-logs\\"+dateFormat.format(date).toString();
-		new File(projectDirectory+"\\test-logs\\"+dateFormat.format(date).toString()).mkdirs();
+		logDirectory = System.getProperty("user.dir")+"/test-logs/"+dateFormat.format(date).toString();
+		new File(System.getProperty("user.dir")+"/test-logs/"+dateFormat.format(date).toString()).mkdirs();
+		System.out.println("Project directory: "+System.getProperty("user.dir"));
 	}
 	
 	@AfterSuite
 	@Parameters({"xlsDirectory"})
 	public void afterSuite(String xlsDirectory) throws Exception{
+	
+		if (!xlsDirectory.equals("NOINPUT")){
+			LogManager.closeXLS(xlsDirectory, XLS);
+		}
+		closeServer();
 		
-		LogManager.closeXLS(xlsDirectory, XLS);
-		
-		closeServer();		
+//		Process process=Runtime.getRuntime().exec("xcopy test-output/MainSuite "+logDirectory+" /e /i /h");
+//		process.waitFor();
 		
 	}
 
 }
-
